@@ -1,46 +1,28 @@
-# render.yaml - Zenith Trading Platform Blueprint (Corrected Structure)
-
-# ডাটাবেসগুলোকে এই 'databases' সেকশনে রাখতে হয়
-databases:
-  - name: zenith-db
-    plan: free
-    databaseName: zenith_bot_db # ঐচ্ছিক, কিন্তু ভালো অভ্যাস
-    user: zenith_user         # ঐচ্ছিক, কিন্তু ভালো অভ্যাস
-
-# সার্ভিসগুলোকে এই 'services' সেকশনে রাখতে হয়
 services:
-  # 1. Backend Web Service
-  - name: zenith-bot-backend
-    type: web
+  - type: web
+    name: zenith-bot-backend
     runtime: python
     region: oregon
     plan: free
     branch: main
     rootDir: backend
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app
-    
-    # TA-Lib ইনস্টল করার জন্য প্রয়োজনীয় সিস্টেম প্যাকেজ
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app"
+    envVars:
+      - fromGroup: zenith-secrets
     nativeEnvironment:
       systemPackages:
         - build-essential
         - libta-lib-dev
-        
-    envVars:
-      # Environment Group থেকে গোপন তথ্যগুলো লোড করা হবে
-      - fromGroup: zenith-secrets
 
-  # 2. Frontend Static Site
-  - name: zenith-trading-bot
-    type: static
+  - type: static
+    name: zenith-trading-bot
     region: oregon
     plan: free
     branch: main
     rootDir: frontend
-    buildCommand: npm install && npm run build
-    publishDir: dist
-    
+    buildCommand: "npm install && npm run build"
+    publishDir: "dist"
     envVars:
-      # Vite-এর জন্য الصحيح variable
       - key: VITE_APP_API_URL
-        value: https://zenith-bot-backend.onrender.com
+        value: "https://zenith-bot-backend.onrender.com"
