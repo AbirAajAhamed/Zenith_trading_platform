@@ -1,0 +1,5 @@
+{
+  "name": "Zenith Trading Bot Dashboard",
+  "description": "A comprehensive, full-stack web application to manage, control, and analyze your automated Python trading bot. Features real-time P&L, multi-strategy management, and detailed analytics for various markets.",
+  "requestFramePermissions": []
+}

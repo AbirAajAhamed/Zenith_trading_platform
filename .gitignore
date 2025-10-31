@@ -1,0 +1,18 @@
+# Python / Backend
+zenith_bot_backend/.venv
+zenith_bot_backend/__pycache__
+zenith_bot_backend/zenith_bot.db
+zenith_bot_backend/.env
+
+# Frontend
+frontend/node_modules
+frontend/dist
+frontend/.env*
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# OS generated files
+.DS_Store
+Thumbs.db

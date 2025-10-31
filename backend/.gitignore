@@ -1,0 +1,47 @@
+# Environment variables - DO NOT COMMIT!
+.env
+# Cache folder for historical market data
+cache/
+# ==============================================================================
+# Python & Virtual Environments
+# ==============================================================================
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+
+# IDE and Editor files
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+
+# ==============================================================================
+# Project-Specific Ignores
+# ==============================================================================
+
+# Cache folder for historical market data
+# This prevents large data files from being committed to the repository.
+cache/
+
+# SQLite Database
+# Add this if you want to keep your database file out of version control.
+zenith_bot.db
+
+
+# ==============================================================================
+# Node / Frontend specific (if frontend is in the same repository)
+# ==============================================================================
+node_modules/
+dist/
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
