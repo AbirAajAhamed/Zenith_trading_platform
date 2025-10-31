@@ -1,19 +1,13 @@
 services:
   - type: web
     name: zenith-bot-backend
-    runtime: python
+    runtime: docker
     region: oregon
     plan: free
     branch: main
-    rootDir: backend
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app"
+    dockerfilePath: ./backend/Dockerfile
     envVars:
       - fromGroup: zenith-secrets
-    nativeEnvironment:
-      systemPackages:
-        - build-essential
-        - libta-lib-dev
 
   - type: static
     name: zenith-trading-bot
