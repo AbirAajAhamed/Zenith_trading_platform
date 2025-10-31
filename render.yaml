@@ -1,0 +1,45 @@
+# render.yaml - Zenith Trading Platform Blueprint (চূড়ান্ত সংস্করণ)
+
+services:
+  # 1. PostgreSQL Database
+  - name: zenith-db
+    type: psql
+    plan: free
+    psqlVersion: 14 # ভার্সন 14 স্থিতিশীল
+    region: oregon
+
+  # 2. Backend Web Service
+  - name: zenith-bot-backend
+    type: web
+    runtime: python
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app
+    
+    # TA-Lib ইনস্টল করার জন্য প্রয়োজনীয় সিস্টেম প্যাকেজ
+    nativeEnvironment:
+      systemPackages:
+        - build-essential
+        - libta-lib-dev
+        
+    envVars:
+      # Environment Group থেকে গোপন তথ্যগুলো লোড করা হবে
+      - fromGroup: zenith-secrets
+
+  # 3. Frontend Static Site
+  - name: zenith-trading-bot
+    type: static
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    
+    # ফ্রন্টএন্ডকে ব্যাকএন্ডের URL সম্পর্কে জানানোর জন্য
+    envVars:
+      - key: VITE_APP_API_URL # <-- মূল পরিবর্তন (REACT_APP -> VITE_APP)
+        value: https://zenith-bot-backend.onrender.com

@@ -1,10 +1,17 @@
-// frontend/services/apiClient.ts (সম্পূর্ণ এবং অপটিমাইজেশন-সহ আপডেট করা)
+// frontend/services/apiClient.ts (render.yaml-এর জন্য চূড়ান্তভাবে আপডেট করা)
 
 // --- ডেটা টাইপ ইম্পোর্ট করা ---
 import { BacktestResult, BotStatus, Trade, PerformanceStats } from '../types';
 
-// আমাদের FastAPI সার্ভারের ঠিকানা
-const API_BASE_URL = 'http://localhost:8000/api'; 
+// ==============================================================================
+//  ডাইনামিক API URL (Dynamic API URL)
+// ==============================================================================
+// Vite এনভায়রনমেন্ট ভেরিয়েবল থেকে প্রোডাকশন URL পড়ার চেষ্টা করে।
+// যদি এটি না পাওয়া যায় (অর্থাৎ, লোকাল ডেভেলপমেন্টে), তবে localhost-কে ফলব্যাক হিসেবে ব্যবহার করে।
+const ROOT_URL = import.meta.env.VITE_APP_API_URL || 'http://localhost:8000';
+
+// আমাদের FastAPI সার্ভারের চূড়ান্ত ঠিকানা
+const API_BASE_URL = `${ROOT_URL}/api`; 
 
 // ==============================================================================
 //  টাইপ এবং ইন্টারফেস (Types and Interfaces)
@@ -56,7 +63,6 @@ export interface JobStatus {
 export interface OptimizationResult extends JobStatus {
     results?: any[]; // ফলাফল নির্দিষ্ট টাইপের হতে পারে
 }
-
 
 // ==============================================================================
 //  UI-এর জন্য তথ্য আনা (Informational API Functions for UI)
