@@ -1,4 +1,4 @@
-# app/main.py (চূড়ান্ত এবং নির্ভরযোগ্য সংস্করণ)
+# app/main.py (আপনার দেওয়া কোড + CORS ফিক্স)
 
 # --- FastAPI এবং Python-এর স্ট্যান্ডার্ড লাইব্রেরি ইম্পোর্ট ---
 from fastapi import FastAPI, BackgroundTasks, Depends, HTTPException, UploadFile, File
@@ -38,13 +38,24 @@ app = FastAPI(
 SUPPORTED_EXCHANGES = ["binance", "kucoin", "bybit"]
 SUPPORTED_TIMEFRAMES = ["1h", "4h", "1d", "1w"]
 
+# ==========================================================
+#  CORS Middleware - চূড়ান্ত এবং সঠিক সংস্করণ
+# ==========================================================
+# এখানে আমরা লাইভ ফ্রন্টএন্ডের URL টি যোগ করে দিচ্ছি।
+origins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://zenith-trading-bot.onrender.com"  # <-- এই নতুন এবং গুরুত্বপূর্ণ লাইনটি যোগ করা হয়েছে
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=origins, # <-- এখানে এখন নতুন origins লিস্টটি ব্যবহৃত হচ্ছে
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# ==========================================================
 
 bot_status = {"is_running": False, "strategy_name": None, "symbol": None}
 
@@ -88,10 +99,8 @@ def get_supported_exchanges():
     return SUPPORTED_EXCHANGES
 
 @app.get("/api/exchange/markets", response_model=List[str], tags=["Info"])
-async def get_available_markets(exchange_name: str): # <-- মূল পরিবর্তন: def -> async def
-    """একটি নির্দিষ্ট এক্সচেঞ্জের সমস্ত উপলব্ধ ট্রেডিং পেয়ারের তালিকা প্রদান করে।"""
+async def get_available_markets(exchange_name: str):
     try:
-        # exchange_manager-কে কল করার সময় await যোগ করা হয়েছে
         markets = await exchange_manager.get_all_markets(exchange_name)
         return markets
     except ValueError as e:
@@ -104,7 +113,6 @@ def get_supported_timeframes():
 # --- Strategy Management Endpoints ---
 @app.get("/api/strategies/list", response_model=List[str], tags=["Strategies"])
 def get_strategies():
-    """সমস্ত উপলব্ধ ডিফল্ট এবং আপলোড করা স্ট্র্যাটেজির একটি তালিকা প্রদান করে।"""
     try:
         return strategy_manager.get_available_strategies()
     except Exception as e:
