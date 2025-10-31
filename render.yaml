@@ -1,14 +1,15 @@
-# render.yaml - Zenith Trading Platform Blueprint (চূড়ান্ত সংস্করণ)
+# render.yaml - Zenith Trading Platform Blueprint (Corrected Structure)
 
-services:
-  # 1. PostgreSQL Database
+# ডাটাবেসগুলোকে এই 'databases' সেকশনে রাখতে হয়
+databases:
   - name: zenith-db
-    type: psql
     plan: free
-    psqlVersion: 14 # ভার্সন 14 স্থিতিশীল
-    region: oregon
+    databaseName: zenith_bot_db # ঐচ্ছিক, কিন্তু ভালো অভ্যাস
+    user: zenith_user         # ঐচ্ছিক, কিন্তু ভালো অভ্যাস
 
-  # 2. Backend Web Service
+# সার্ভিসগুলোকে এই 'services' সেকশনে রাখতে হয়
+services:
+  # 1. Backend Web Service
   - name: zenith-bot-backend
     type: web
     runtime: python
@@ -29,7 +30,7 @@ services:
       # Environment Group থেকে গোপন তথ্যগুলো লোড করা হবে
       - fromGroup: zenith-secrets
 
-  # 3. Frontend Static Site
+  # 2. Frontend Static Site
   - name: zenith-trading-bot
     type: static
     region: oregon
@@ -39,7 +40,7 @@ services:
     buildCommand: npm install && npm run build
     publishDir: dist
     
-    # ফ্রন্টএন্ডকে ব্যাকএন্ডের URL সম্পর্কে জানানোর জন্য
     envVars:
-      - key: VITE_APP_API_URL # <-- মূল পরিবর্তন (REACT_APP -> VITE_APP)
+      # Vite-এর জন্য الصحيح variable
+      - key: VITE_APP_API_URL
         value: https://zenith-bot-backend.onrender.com
